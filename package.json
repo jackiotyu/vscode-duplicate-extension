@@ -1,37 +1,108 @@
 {
-  "name": "clean-old-version-extension",
-  "displayName": "clean old version extension",
+  "name": "vscode-duplicate-extension",
+  "displayName": "Identify unused or outdated extensions.找出未使用或过时的扩展",
   "description": "",
   "version": "0.0.1",
+  "publisher": "jackiotyu",
   "engines": {
-    "vscode": "^1.88.0"
+    "vscode": "^1.60.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "identify unused or outdated extensions",
+    "找出未使用或过时的扩展"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jackiotyu/vscode-duplicate-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jackiotyu/vscode-duplicate-extension/issues"
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "icon": "images/icon.png",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
+    "views": {
+      "explorer": [
         {
-          "icon": "images/icon.svg",
-          "id": "clean-old-version-extension",
-          "title": "Clean old version extension"
+          "id": "duplicate-extension.extension-version-list",
+          "name": "extension version list",
+          "icon": "images/icon.svg"
         }
       ]
     },
-    "views": {
-      "clean-old-version-extension": [
+    "commands": [
+      {
+        "command": "duplicate-extension.refresh",
+        "icon": "$(refresh)",
+        "title": "Refresh"
+      },
+      {
+        "command": "duplicate-extension.filter",
+        "icon": "$(filter)",
+        "title": "Only duplicate extensions"
+      },
+      {
+        "command": "duplicate-extension.unFilter",
+        "icon": "$(filter-filled)",
+        "title": "All extensions"
+      },
+      {
+        "command": "duplicate-extension.revealInExtensions",
+        "icon": "$(extensions)",
+        "title": "Reveal in extension manager"
+      }
+    ],
+    "menus": {
+      "view/title": [
         {
-          "id": "extension-version-list",
-          "name": "extension version list"
+          "command": "duplicate-extension.refresh",
+          "when": "view == duplicate-extension.extension-version-list",
+          "group": "navigation@100"
+        },
+        {
+          "command": "duplicate-extension.filter",
+          "when": "view == duplicate-extension.extension-version-list && duplicate-extension.filter == false",
+          "group": "navigation@100"
+        },
+        {
+          "command": "duplicate-extension.unFilter",
+          "when": "view == duplicate-extension.extension-version-list && duplicate-extension.filter == true",
+          "group": "navigation@100"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "duplicate-extension.revealInExtensions",
+          "when": "viewItem =~ /duplicate-extension.extInfo/",
+          "group": "inline@10"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "duplicate-extension.refresh",
+          "when": "false"
+        },
+        {
+          "command": "duplicate-extension.filter",
+          "when": "false"
+        },
+        {
+          "command": "duplicate-extension.unFilter",
+          "when": "false"
+        },
+        {
+          "command": "duplicate-extension.revealInExtensions",
+          "when": "false"
         }
       ]
     }
   },
   "scripts": {
+    "vsce:pack": "vsce package --no-dependencies",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
@@ -43,19 +114,25 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.88.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.60.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
+    "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.0.4",
     "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
     "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2",
-    "@vscode/test-electron": "^2.3.0"
+    "webpack-cli": "^5.0.2"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.17.0",
+    "@types/semver": "^7.5.8",
+    "lodash": "^4.17.21",
+    "semver": "^7.6.0"
   }
 }
