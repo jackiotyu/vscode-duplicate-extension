@@ -3,11 +3,13 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs/promises';
 import semver from 'semver';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { ExtInfo } from '@/types';
 import { Commands } from '@/constants';
 
-const extFolderUri = vscode.Uri.file(path.join(os.homedir(), '.vscode', 'extensions'));
+const extFolderUri = vscode.env.appName.includes('Code - Insiders')
+    ? vscode.Uri.file(path.join(os.homedir(), '.vscode-insiders', 'extensions'))
+    : vscode.Uri.file(path.join(os.homedir(), '.vscode', 'extensions'));
 const refreshEvent = new vscode.EventEmitter<void>();
 const filterEvent = new vscode.EventEmitter<boolean>();
 
