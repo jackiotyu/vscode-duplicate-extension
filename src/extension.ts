@@ -36,9 +36,8 @@ const findAllPackageJSON = async (): Promise<ExtInfo[]> => {
 
 const removeFolders = async (items: { path: string }[], message: string, detail = '') => {
     try {
-        const confirm = 'confirm';
-        const cancel = 'cancel';
-        const res = await vscode.window.showInformationMessage(message, { detail, modal: true }, confirm, cancel);
+        const confirm = vscode.l10n.t('confirm');
+        const res = await vscode.window.showInformationMessage(message, { detail, modal: true }, confirm);
         if (res !== confirm) return;
         await Promise.all(
             items.map((item) =>
