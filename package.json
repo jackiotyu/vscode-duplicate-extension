@@ -24,12 +24,13 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "icon": "images/icon.png",
+  "l10n": "./l10n",
   "contributes": {
     "views": {
       "explorer": [
         {
           "id": "duplicate-extension.extension-version-list",
-          "name": "extension version list",
+          "name": "%views.extension-version-list.name%",
           "icon": "images/icon.svg"
         }
       ]
@@ -38,22 +39,32 @@
       {
         "command": "duplicate-extension.refresh",
         "icon": "$(refresh)",
-        "title": "Refresh"
+        "title": "%cmd.refresh%"
       },
       {
         "command": "duplicate-extension.filter",
         "icon": "$(filter)",
-        "title": "Only duplicate extensions"
+        "title": "%cmd.filter%"
       },
       {
         "command": "duplicate-extension.unFilter",
         "icon": "$(filter-filled)",
-        "title": "All extensions"
+        "title": "%cmd.unFilter%"
       },
       {
         "command": "duplicate-extension.revealInExtensions",
         "icon": "$(extensions)",
-        "title": "Reveal in extension manager"
+        "title": "%cmd.revealInExtensions%"
+      },
+      {
+        "command": "duplicate-extension.cleanupOutdatedExtensions",
+        "icon": "$(clear-all)",
+        "title": "%cmd.cleanupOutdatedExtensions%"
+      },
+      {
+        "command": "duplicate-extension.moveExtensionToTrashcan",
+        "icon": "$(close)",
+        "title": "%cmd.moveExtensionToTrashcan%"
       }
     ],
     "menus": {
@@ -66,12 +77,17 @@
         {
           "command": "duplicate-extension.filter",
           "when": "view == duplicate-extension.extension-version-list && duplicate-extension.filter == false",
-          "group": "navigation@100"
+          "group": "navigation@99"
         },
         {
           "command": "duplicate-extension.unFilter",
           "when": "view == duplicate-extension.extension-version-list && duplicate-extension.filter == true",
-          "group": "navigation@100"
+          "group": "navigation@99"
+        },
+        {
+          "command": "duplicate-extension.cleanupOutdatedExtensions",
+          "when": "view == duplicate-extension.extension-version-list",
+          "group": "navigation@20"
         }
       ],
       "view/item/context": [
@@ -79,6 +95,11 @@
           "command": "duplicate-extension.revealInExtensions",
           "when": "viewItem =~ /duplicate-extension.extInfo/",
           "group": "inline@10"
+        },
+        {
+          "command": "duplicate-extension.moveExtensionToTrashcan",
+          "when": "viewItem =~ /duplicate-extension.extInfo/",
+          "group": "inline@9"
         }
       ],
       "commandPalette": [
@@ -96,6 +117,10 @@
         },
         {
           "command": "duplicate-extension.revealInExtensions",
+          "when": "false"
+        },
+        {
+          "command": "duplicate-extension.moveExtensionToTrashcan",
           "when": "false"
         }
       ]

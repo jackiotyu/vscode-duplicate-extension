@@ -1,0 +1,9 @@
+{
+    "views.extension-version-list.name": "extension version list",
+    "cmd.refresh": "Refresh",
+    "cmd.filter": "Only duplicate extensions",
+    "cmd.unFilter": "All extensions",
+    "cmd.revealInExtensions": "Reveal in extension manager",
+    "cmd.cleanupOutdatedExtensions": "Move all outdated extensions folder to trashcan",
+    "cmd.moveExtensionToTrashcan": "Move extension folder to trashcan"
+}

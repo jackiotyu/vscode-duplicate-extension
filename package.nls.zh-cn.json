@@ -1,0 +1,9 @@
+{
+    "views.extension-version-list.name": "拓展版本列表",
+    "cmd.refresh": "刷新",
+    "cmd.filter": "只展示重复的拓展",
+    "cmd.unFilter": "展示全部拓展",
+    "cmd.revealInExtensions": "在拓展管理中展示",
+    "cmd.cleanupOutdatedExtensions": "移动所有旧版的拓展到系统回收站",
+    "cmd.moveExtensionToTrashcan": "移动到系统回收站"
+}
