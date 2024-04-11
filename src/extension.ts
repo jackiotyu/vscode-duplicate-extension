@@ -44,7 +44,7 @@ const removeFolders = async (items: { path: string }[], message: string, detail 
                 vscode.workspace.fs.delete(vscode.Uri.file(item.path), { recursive: true, useTrash: true }),
             ),
         );
-        vscode.window.showInformationMessage("Move to system's trashcan succeeded");
+        vscode.window.showInformationMessage(vscode.l10n.t("Move to system's trashcan succeeded"));
     } catch (error: any) {
         vscode.window.showErrorMessage(error.message);
     }
