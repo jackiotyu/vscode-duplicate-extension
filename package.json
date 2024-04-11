@@ -2,7 +2,7 @@
   "name": "vscode-duplicate-extension",
   "displayName": "Extension version list",
   "description": "Identify unused or outdated extensions.找出未使用或过时的扩展",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "jackiotyu",
   "engines": {
     "vscode": "^1.60.0"
@@ -11,8 +11,8 @@
     "Other"
   ],
   "keywords": [
-    "identify unused or outdated extensions",
-    "找出未使用或过时的扩展"
+    "identify/cleanup unused or outdated extensions",
+    "找出/清理未使用或过时的扩展"
   ],
   "repository": {
     "type": "git",

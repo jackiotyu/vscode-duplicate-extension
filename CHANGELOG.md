@@ -8,6 +8,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
+- Cleanup folder(s) actions.
+- Support chinese.
+
+## [0.0.2] - 2024-04-10
+
+### Fixed
+
 - Optimize package size by utilizing lodash selectively.
 - Adapt for vscode-insiders.
 
