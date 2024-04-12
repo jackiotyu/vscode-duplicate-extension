@@ -65,6 +65,11 @@
         "command": "duplicate-extension.moveExtensionToTrashcan",
         "icon": "$(close)",
         "title": "%cmd.moveExtensionToTrashcan%"
+      },
+      {
+        "command": "duplicate-extension.listUnusedExtension",
+        "icon": "$(eye-closed)",
+        "title": "%cmd.listUnusedExtension%"
       }
     ],
     "menus": {
@@ -88,6 +93,11 @@
           "command": "duplicate-extension.cleanupOutdatedExtensions",
           "when": "view == duplicate-extension.extension-version-list",
           "group": "navigation@20"
+        },
+        {
+          "command": "duplicate-extension.listUnusedExtension",
+          "when": "view == duplicate-extension.extension-version-list",
+          "group": "navigation@10"
         }
       ],
       "view/item/context": [

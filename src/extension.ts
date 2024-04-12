@@ -131,7 +131,7 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
             refreshEvent.event(this.refresh),
             filterEvent.event(this.toggleFilter),
         );
-        this.refresh();
+        queueMicrotask(() => this.refresh());
     }
     toggleFilter = (useFilter: boolean) => {
         this.useFilter = useFilter;
@@ -172,7 +172,15 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         });
         return list;
     }
-    getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
+    getUnusedExtInfos() {
+        let idSet = new Set<string>();
+        this.data.forEach((item) => {
+            const id = item.publisher + '.' + item.name;
+            if(!vscode.extensions.getExtension(id)) idSet.add(id);
+        });
+        return [...idSet];
+    }
+    async getChildren(element?: vscode.TreeItem | undefined): Promise<vscode.TreeItem[]> {
         if (!element) {
             const duplicateSet = this.findDuplicateSet();
             const items = this.data.map((item) => {
@@ -206,10 +214,14 @@ export function activate(context: vscode.ExtensionContext) {
             filterEvent.fire(false);
         }),
         vscode.commands.registerCommand(Commands.revealInExtensions, (item: ExtTreeItem) => {
-            vscode.commands.executeCommand('workbench.extensions.action.showExtensionsWithIds', [[item.extId]]);
+            vscode.commands.executeCommand('workbench.extensions.action.showExtensionsWithIds', [item.extId]);
         }),
         vscode.commands.registerCommand(Commands.moveExtensionToTrashcan, (item: ExtTreeItem) => {
-            removeFolders([item], vscode.l10n.t("Move extension folder to system's trashcan?"), vscode.l10n.t("Selected folder is {0}", item.path));
+            removeFolders(
+                [item],
+                vscode.l10n.t("Move extension folder to system's trashcan?"),
+                vscode.l10n.t('Selected folder is {0}', item.path),
+            );
         }),
         vscode.commands.registerCommand(Commands.cleanupOutdatedExtensions, () => {
             const outdatedExtInfos = treeDataProvider.getOutdatedExtInfos();
@@ -217,8 +229,13 @@ export function activate(context: vscode.ExtensionContext) {
             removeFolders(
                 outdatedExtInfos,
                 vscode.l10n.t("Move outdated extensions to system's trashcan?"),
-                vscode.l10n.t("Selected folders:\n{0}", outdatedExtInfos.map(item => item.path).join('\n'))
+                vscode.l10n.t('Selected folders:\n{0}', outdatedExtInfos.map((item) => item.path).join('\n')),
             );
+        }),
+        vscode.commands.registerCommand(Commands.listUnusedExtension, () => {
+            const ids = treeDataProvider.getUnusedExtInfos();
+            console.log('ids ', ids);
+            vscode.commands.executeCommand('workbench.extensions.action.showExtensionsWithIds', ids);
         }),
         refreshEvent,
         filterEvent,
