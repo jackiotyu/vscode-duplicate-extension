@@ -1,3 +1,4 @@
+
 export enum Commands {
     refresh = 'duplicate-extension.refresh',
     filter = 'duplicate-extension.filter',

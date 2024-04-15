@@ -80,6 +80,30 @@ class ColorSelector {
     }
 }
 
+class FolderWatcher implements vscode.Disposable {
+    private folderWatchers: vscode.Disposable[] = [];
+    constructor(context: vscode.ExtensionContext) {
+        context.subscriptions.push(this);
+    }
+    init() {
+        this.dispose();
+        const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(extFolderUri, '*'));
+        this.folderWatchers.push(
+            watcher,
+            watcher.onDidChange(this.refresh),
+            watcher.onDidDelete(this.refresh),
+            watcher.onDidCreate(this.refresh),
+        );
+    }
+    private refresh = () => {
+        refreshEvent.fire();
+    };
+    dispose = () => {
+        this.folderWatchers.forEach((item) => item.dispose());
+        this.folderWatchers.length = 0;
+    };
+}
+
 class ExtTreeItem extends vscode.TreeItem {
     duplicate: boolean = false;
     contextValue = 'duplicate-extension.extInfo';
@@ -122,15 +146,7 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     _onDidChangeTreeData = new vscode.EventEmitter<void>();
     onDidChangeTreeData = this._onDidChangeTreeData.event;
     constructor(context: vscode.ExtensionContext) {
-        const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(extFolderUri, '*'));
-        context.subscriptions.push(
-            watcher.onDidChange(() => this.refresh()),
-            watcher.onDidDelete(() => this.refresh()),
-            watcher.onDidCreate(() => this.refresh()),
-            watcher,
-            refreshEvent.event(this.refresh),
-            filterEvent.event(this.toggleFilter),
-        );
+        context.subscriptions.push(refreshEvent.event(this.refresh), filterEvent.event(this.toggleFilter));
         queueMicrotask(() => this.refresh());
     }
     toggleFilter = (useFilter: boolean) => {
@@ -176,7 +192,7 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         let idSet = new Set<string>();
         this.data.forEach((item) => {
             const id = item.publisher + '.' + item.name;
-            if(!vscode.extensions.getExtension(id)) idSet.add(id);
+            if (!vscode.extensions.getExtension(id)) idSet.add(id);
         });
         return [...idSet];
     }
@@ -200,8 +216,17 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 export function activate(context: vscode.ExtensionContext) {
     vscode.commands.executeCommand('setContext', ContextValue.filter, false);
     const treeDataProvider = new TreeViewProvider(context);
+    const treeView = vscode.window.createTreeView(TreeViewProvider.id, {
+        treeDataProvider: treeDataProvider,
+        showCollapseAll: true,
+    });
+    const folderWatcher = new FolderWatcher(context);
     context.subscriptions.push(
-        vscode.window.registerTreeDataProvider(TreeViewProvider.id, treeDataProvider),
+        treeView.onDidChangeVisibility((e) => {
+            if (e.visible) folderWatcher.init();
+            else folderWatcher.dispose();
+        }),
+        treeView,
         vscode.commands.registerCommand(Commands.refresh, () => {
             refreshEvent.fire();
         }),
@@ -234,7 +259,6 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand(Commands.listUnusedExtension, () => {
             const ids = treeDataProvider.getUnusedExtInfos();
-            console.log('ids ', ids);
             vscode.commands.executeCommand('workbench.extensions.action.showExtensionsWithIds', ids);
         }),
         refreshEvent,
