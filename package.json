@@ -70,6 +70,11 @@
         "command": "duplicate-extension.listUnusedExtension",
         "icon": "$(eye-closed)",
         "title": "%cmd.listUnusedExtension%"
+      },
+      {
+        "command": "duplicate-extension.openStorageFolder",
+        "icon": "$(folder)",
+        "title": "%cmd.openStorageFolder%"
       }
     ],
     "menus": {
@@ -110,6 +115,11 @@
           "command": "duplicate-extension.moveExtensionToTrashcan",
           "when": "viewItem =~ /duplicate-extension.extInfo/",
           "group": "inline@9"
+        },
+        {
+          "command": "duplicate-extension.openStorageFolder",
+          "when": "viewItem =~ /duplicate-extension.extInfo(.*?)\\(storage\\)/",
+          "group": "inline@8"
         }
       ],
       "commandPalette": [
@@ -131,6 +141,10 @@
         },
         {
           "command": "duplicate-extension.moveExtensionToTrashcan",
+          "when": "false"
+        },
+        {
+          "command": "duplicate-extension.openStorageFolder",
           "when": "false"
         }
       ]

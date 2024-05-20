@@ -6,6 +6,7 @@ export enum Commands {
     cleanupOutdatedExtensions = 'duplicate-extension.cleanupOutdatedExtensions',
     moveExtensionToTrashcan = 'duplicate-extension.moveExtensionToTrashcan',
     listUnusedExtension = 'duplicate-extension.listUnusedExtension',
+    openStorageFolder = 'duplicate-extension.openStorageFolder',
 }
 
 export enum ContextValue {

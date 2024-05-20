@@ -1,8 +1,8 @@
 {
-    "Move extension folder to system's trashcan?": "确认移动拓展文件夹到系统回收站？",
+    "Move extension folder to system's trashcan?": "确认移动扩展文件夹到系统回收站？",
     "Selected folder is {0}": "选中文件夹为 {0}",
     "Move to system's trashcan succeeded": "移动到系统回收站成功",
-    "Move outdated extensions to system's trashcan?": "确认移动所有旧版的拓展到系统回收站？",
+    "Move outdated extensions to system's trashcan?": "确认移动所有旧版的扩展到系统回收站？",
     "Selected folders:\n{0}": "选中文件夹为：\n{0}",
     "confirm": "确认",
     "cancel": "取消"

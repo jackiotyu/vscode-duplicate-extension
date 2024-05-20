@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import os from 'os';
 import path from 'path';
+import fs from 'fs';
 import semver from 'semver';
 import debounce from 'lodash/debounce';
 import { ExtInfo } from '@/types';
@@ -47,6 +48,14 @@ const removeFolders = async (items: { path: string }[], message: string, detail 
         vscode.window.showInformationMessage(vscode.l10n.t("Move to system's trashcan succeeded"));
     } catch (error: any) {
         vscode.window.showErrorMessage(error.message);
+    }
+};
+
+const getFolder = (folder: string) => {
+    try {
+        return fs.existsSync(folder) ? folder : '';
+    } catch {
+        return '';
     }
 };
 
@@ -109,6 +118,7 @@ class ExtTreeItem extends vscode.TreeItem {
     contextValue = 'duplicate-extension.extInfo';
     extId: string = '';
     path: string = '';
+    storageFolder?: string;
     constructor(item: ExtInfo, isDuplicate: boolean, collapsibleState?: vscode.TreeItemCollapsibleState) {
         const extId = item.publisher + '.' + item.name;
         const ext = vscode.extensions.getExtension(extId);
@@ -136,6 +146,10 @@ class ExtTreeItem extends vscode.TreeItem {
         };
         this.extId = extId;
         this.path = item.path;
+        if (item.storageFolder) {
+            this.storageFolder = item.storageFolder;
+            this.contextValue += '(storage)';
+        }
     }
 }
 
@@ -143,9 +157,11 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     static readonly id = 'duplicate-extension.extension-version-list';
     private data: ExtInfo[] = [];
     private useFilter = false;
+    private storageFolder: string;
     _onDidChangeTreeData = new vscode.EventEmitter<void>();
     onDidChangeTreeData = this._onDidChangeTreeData.event;
     constructor(context: vscode.ExtensionContext) {
+        this.storageFolder = path.dirname(context.globalStorageUri.fsPath);
         context.subscriptions.push(refreshEvent.event(this.refresh), filterEvent.event(this.toggleFilter));
         queueMicrotask(() => this.refresh());
     }
@@ -155,7 +171,12 @@ class TreeViewProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     };
     refresh = debounce(async () => {
         ColorSelector.reset();
-        this.data = await findAllPackageJSON();
+        this.data = (await findAllPackageJSON()).map((item) => {
+            return {
+                ...item,
+                storageFolder: getFolder(path.join(this.storageFolder, item.publisher + '.' + item.name)),
+            };
+        });
         this._onDidChangeTreeData.fire();
     }, 300);
     private findDuplicateSet() {
@@ -260,6 +281,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(Commands.listUnusedExtension, () => {
             const ids = treeDataProvider.getUnusedExtInfos();
             vscode.commands.executeCommand('workbench.extensions.action.showExtensionsWithIds', ids);
+        }),
+        vscode.commands.registerCommand(Commands.openStorageFolder, (item: ExtTreeItem) => {
+            if (!item.storageFolder) return;
+            vscode.env.openExternal(vscode.Uri.file(item.storageFolder));
         }),
         refreshEvent,
         filterEvent,

@@ -6,4 +6,5 @@ export interface ExtInfo {
     publisher: string;
     mtime: number;
     path: string;
+    storageFolder?: string;
 }

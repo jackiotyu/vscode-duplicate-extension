@@ -6,5 +6,6 @@
     "cmd.revealInExtensions": "Reveal in extension manager",
     "cmd.cleanupOutdatedExtensions": "Move all outdated extensions folder to trashcan",
     "cmd.moveExtensionToTrashcan": "Move extension folder to trashcan",
-    "cmd.listUnusedExtension": "List unused extensions in extension manager"
+    "cmd.listUnusedExtension": "List unused extensions in extension manager",
+    "cmd.openStorageFolder": "Open storage folder"
 }

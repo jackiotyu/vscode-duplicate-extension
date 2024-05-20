@@ -16,4 +16,4 @@ This extension can identify unused or outdated extensions.
 
 - 快速识别未使用或过时的扩展。
 - 通过资源管理器菜单方便地管理扩展。
-- “✨”代表正在使用的拓展
+- “✨”代表正在使用的扩展
