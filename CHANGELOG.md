@@ -4,6 +4,12 @@ All notable changes to the "clean-old-version-extension" extension will be docum
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.7] - 2024-05-20
+
+### Fixed
+
+- Open storage folder.
+
 ## [0.0.5] - 2024-04-12
 
 ### Fixed
